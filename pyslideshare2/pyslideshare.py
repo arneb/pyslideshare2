@@ -37,7 +37,8 @@ service_url_dict = {
     'slideshow_by_tag' : 'https://www.slideshare.net/api/%d/get_slideshows_by_tag' % API_VERSION,
     'slideshow_by_group' : 'https://www.slideshare.net/api/%d/get_slideshows_by_group' % API_VERSION,
     'upload_slideshow' : 'https://www.slideshare.net/api/%d/upload_slideshow' % API_VERSION,
-    'delete_slideshow' : 'https://www.slideshare.net/api/%d/delete_slideshow' % API_VERSION
+    'delete_slideshow' : 'https://www.slideshare.net/api/%d/delete_slideshow' % API_VERSION,
+    'slideshow_search' : 'https://www.slideshare.net/api/%d/search_slideshows' % API_VERSION
 }
 
 class Callable:
@@ -322,6 +323,16 @@ class pyslideshare:
             print >> sys.stderr, 'slideshow_id is needed for this call.'
             sys.exit(1)
         return self.make_call('get_slideshow', slideshow_id=str(slideshow_id), **args)
+
+    def get_slideshow_by_search(self, search_term=None, offset=None, limit=None):
+        """
+        Requires: search_term
+        Optional: offset, limit
+        """
+        if not search_term:
+            print >> sys.stderr, 'A search term is required for this call.'
+            sys.exit(1)
+        return self.make_call('slideshow_search', q=search_term, page=offset, order="latest", items_per_page=limit)
 
     def get_slideshow_by_tag(self, tag=None, offset=None, limit=None):
         """
