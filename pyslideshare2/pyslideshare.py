@@ -183,7 +183,7 @@ class pyslideshare:
         Simillar to make_call, except this does authentication first. Needed for upload
         """
         params = self.get_ss_params(encode=False, **args)
-        params['slideshow_srcfile'] = open(args['slideshow_srcfile'], 'rb')        
+        params['slideshow_srcfile'] = open(args['slideshow_srcfile'], 'rb')
         opener = urllib2.build_opener(MultipartPostHandler) # Use our custom post handler which supports unicode
         data = opener.open(service_url_dict[service_url], params).read()
         json = self.parsexml(data)
@@ -314,15 +314,18 @@ class pyslideshare:
                 username_for = self.params['username']
         return self.make_call('slideshow_by_user', username_for=username_for, offset=offset, limit=limit)
 
-    def get_slideshow(self, slideshow_id=None, **args):
+    def get_slideshow(self, slideshow_id=None, slideshow_url=None, **args):
         """
         Method to retrieve a slideshow, given an id
-        Requires: slideshow_id
+        Requires: slideshow_id or slideshow_url
         """
-        if not slideshow_id:
-            print >> sys.stderr, 'slideshow_id is needed for this call.'
+        if not slideshow_id and not slideshow_url:
+            print >> sys.stderr, 'slideshow_id or slideshow_url is needed for this call.'
             sys.exit(1)
-        return self.make_call('get_slideshow', slideshow_id=str(slideshow_id), **args)
+        if slideshow_id:
+            return self.make_call('get_slideshow', slideshow_id=str(slideshow_id), **args)
+        elif slideshow_url:
+            return self.make_call('get_slideshow', slideshow_url=str(slideshow_url), **args)
 
     def get_slideshow_by_search(self, search_term=None, offset=None, limit=None):
         """
